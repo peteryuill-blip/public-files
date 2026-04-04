@@ -72,6 +72,12 @@ def breathe_and_evolve(directory=".", base_archive="00_GLOBAL_SOVEREIGN_ARCHIVE_
                                 dataweb["temporal_engine"][week_id].update(clean_row)
                                 dataweb["temporal_engine"][week_id].pop("Status", None)
                                 dataweb["temporal_engine"][week_id].pop("System_Note", None)
+                                # Explicitly anchor rich narrative fields to canonical lowercase keys
+                                # so the Oracle can query them regardless of CSV export casing.
+                                te_node = dataweb["temporal_engine"][week_id]
+                                for rich_key in ["Raw_Weather_Report", "Studio_Hours", "Thing_Worked", "Thing_Resisted"]:
+                                    if rich_key in te_node:
+                                        te_node[rich_key.lower()] = te_node[rich_key]
                         except ValueError:
                             continue
 
@@ -121,6 +127,14 @@ def breathe_and_evolve(directory=".", base_archive="00_GLOBAL_SOVEREIGN_ARCHIVE_
                         else:
                             dataweb["orphaned_data"][code] = clean_row
 
+    # Unconditional W15 anchor — fires regardless of whether artworks with "w": "W15"
+    # are present in the archive. Prevents Oracle null-reference on CIDs 666160–666172.
+    if "W15" not in dataweb["temporal_engine"]:
+        dataweb["temporal_engine"]["W15"] = {
+            "Status": "ORPHANED_WEEK_PENDING_TELEMETRY",
+            "System_Note": "Placeholder generated to prevent Oracle null-reference."
+        }
+
     # ==========================================================================
     # 2. MARKDOWN INGESTION (Anti-Cannibalism)
     # ==========================================================================
@@ -153,12 +167,13 @@ def breathe_and_evolve(directory=".", base_archive="00_GLOBAL_SOVEREIGN_ARCHIVE_
         art_data.pop("r", None)
         art_data.pop("Code", None)
 
-        # B. Sanitize Markdown Brackets everywhere
+        # B. Sanitize Markdown Brackets everywhere — single-bracket replacement catches
+        #    both full [[...]] wrappers and partially-cleaned [ ] residue from bad runs.
         if "sec" in art_data:
-            art_data["sec"] = str(art_data["sec"]).replace("[[", "").replace("]]", "")
+            art_data["sec"] = str(art_data["sec"]).replace("[", "").replace("]", "")
         if "provenance" in art_data and "sec_routing_tag" in art_data["provenance"]:
             tag = str(art_data["provenance"]["sec_routing_tag"])
-            art_data["provenance"]["sec_routing_tag"] = tag.replace("[[", "").replace("]]", "")
+            art_data["provenance"]["sec_routing_tag"] = tag.replace("[", "").replace("]", "")
 
         # C. Hunt for capitalized CSV keys mistakenly placed at root in previous bad runs
         if "log_data" not in art_data: art_data["log_data"] = {}
