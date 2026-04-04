@@ -210,6 +210,15 @@ def breathe_and_evolve(directory=".", base_archive="00_GLOBAL_SOVEREIGN_ARCHIVE_
                     "Raw_Weather_Report": "Awaiting physical telemetry."
                 }
 
+    # F. Global Temporal Engine Legacy Key Purge
+    # The in-loop pops (Section 1) only fire for weeks present in the current CSV batch.
+    # This pass sweeps ALL temporal_engine nodes — including those carried forward from
+    # prior base archives — and evicts flat baseline residue unconditionally.
+    temporal_legacy_keys = ("steps", "jester", "energy", "somatic")
+    for week_data in dataweb.get("temporal_engine", {}).values():
+        for legacy_key in temporal_legacy_keys:
+            week_data.pop(legacy_key, None)
+
     with open("LIVING_SOVEREIGN_DATAWEB.json", 'w', encoding='utf-8') as f:
         json.dump(dataweb, f, indent=2, ensure_ascii=False)
 
