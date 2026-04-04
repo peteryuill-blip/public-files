@@ -68,16 +68,17 @@ def breathe_and_evolve(directory=".", base_archive="00_GLOBAL_SOVEREIGN_ARCHIVE_
                                 week_id = f"W{week_int}"
                                 if week_id not in dataweb["temporal_engine"]:
                                     dataweb["temporal_engine"][week_id] = {}
-                                # Full unlobotomized update (preserves Raw_Weather_Report, etc.)
-                                dataweb["temporal_engine"][week_id].update(clean_row)
-                                dataweb["temporal_engine"][week_id].pop("Status", None)
-                                dataweb["temporal_engine"][week_id].pop("System_Note", None)
-                                # Explicitly anchor rich narrative fields to canonical lowercase keys
-                                # so the Oracle can query them regardless of CSV export casing.
-                                te_node = dataweb["temporal_engine"][week_id]
-                                for rich_key in ["Raw_Weather_Report", "Studio_Hours", "Thing_Worked", "Thing_Resisted"]:
-                                    if rich_key in te_node:
-                                        te_node[rich_key.lower()] = te_node[rich_key]
+                                # Normalize ALL keys to lowercase snake_case before update.
+                                # This eliminates Title_Case/snake_case duplication at the root
+                                # and prevents empty CSV cells from overwriting existing rich data.
+                                normalized_row = {
+                                    k.lower().replace(" ", "_"): v
+                                    for k, v in clean_row.items()
+                                    if v  # skip empty strings — do not overwrite real data with blanks
+                                }
+                                dataweb["temporal_engine"][week_id].update(normalized_row)
+                                dataweb["temporal_engine"][week_id].pop("status", None)
+                                dataweb["temporal_engine"][week_id].pop("system_note", None)
                         except ValueError:
                             continue
 
@@ -159,7 +160,10 @@ def breathe_and_evolve(directory=".", base_archive="00_GLOBAL_SOVEREIGN_ARCHIVE_
     # ==========================================================================
     # 3. GLOBAL RUTHLESS SCRUB & TEMPORAL ANCHORING (The Master Cleanup)
     # ==========================================================================
-    ghost_keys_to_nest = ["Rating", "Disposition", "Hours", "Surfaces", "Mediums", "Tools", "Date", "Technical Intent", "Discovery"]
+    ghost_keys_to_nest = [
+        "Rating", "Disposition", "Hours", "Surfaces", "Mediums", "Tools",
+        "Date", "Technical Intent", "Discovery", "Height (cm)", "Width (cm)"
+    ]
 
     for cid, art_data in dataweb.get("canonical_archive", {}).items():
         # A. Strip legacy root redundancy
@@ -169,11 +173,15 @@ def breathe_and_evolve(directory=".", base_archive="00_GLOBAL_SOVEREIGN_ARCHIVE_
 
         # B. Sanitize Markdown Brackets everywhere — single-bracket replacement catches
         #    both full [[...]] wrappers and partially-cleaned [ ] residue from bad runs.
+        #    Covers three locations: root "sec", provenance."sec_routing_tag", provenance."sec".
         if "sec" in art_data:
             art_data["sec"] = str(art_data["sec"]).replace("[", "").replace("]", "")
-        if "provenance" in art_data and "sec_routing_tag" in art_data["provenance"]:
-            tag = str(art_data["provenance"]["sec_routing_tag"])
-            art_data["provenance"]["sec_routing_tag"] = tag.replace("[", "").replace("]", "")
+        if "provenance" in art_data:
+            prov = art_data["provenance"]
+            if "sec_routing_tag" in prov:
+                prov["sec_routing_tag"] = str(prov["sec_routing_tag"]).replace("[", "").replace("]", "")
+            if "sec" in prov:
+                prov["sec"] = str(prov["sec"]).replace("[", "").replace("]", "")
 
         # C. Hunt for capitalized CSV keys mistakenly placed at root in previous bad runs
         if "log_data" not in art_data: art_data["log_data"] = {}
@@ -182,7 +190,14 @@ def breathe_and_evolve(directory=".", base_archive="00_GLOBAL_SOVEREIGN_ARCHIVE_
                 # Move to nested dict and lowercase the key
                 art_data["log_data"][ghost.lower().replace(" ", "_")] = art_data.pop(ghost)
 
-        # D. W15 Orphan Crisis Resolution
+        # D. CID-keyed Forensic Material Corrections — unconditional backstop.
+        #    Fires even if the artwork was absent from the CSV or was routed to orphaned_data.
+        if cid == "666011":
+            art_data["log_data"]["surfaces"] = ["S5"]  # Visual forensics: S5, not S6
+        elif cid == "666082":
+            art_data["log_data"]["surfaces"] = ["S6"]  # Visual forensics: S6, not S7
+
+        # E. W15 Orphan Crisis Resolution
         w_tag = art_data.get("w", "")
         if w_tag and str(w_tag).startswith("W"):
             if w_tag not in dataweb["temporal_engine"]:
