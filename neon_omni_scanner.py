@@ -64,7 +64,7 @@ def breathe_and_evolve(directory=".", base_archive="00_GLOBAL_SOVEREIGN_ARCHIVE_
 
                         try:
                             week_int = int(week_val)
-                            if week_int > 0:
+                            if week_int >= 0:  # >= 0 ensures W0 is processed alongside W1–W14
                                 week_id = f"W{week_int}"
                                 if week_id not in dataweb["temporal_engine"]:
                                     dataweb["temporal_engine"][week_id] = {}
@@ -77,6 +77,9 @@ def breathe_and_evolve(directory=".", base_archive="00_GLOBAL_SOVEREIGN_ARCHIVE_
                                     if v  # skip empty strings — do not overwrite real data with blanks
                                 }
                                 dataweb["temporal_engine"][week_id].update(normalized_row)
+                                # Purge legacy flat baseline keys — new canonical keys are sole truth.
+                                for legacy_key in ("steps", "jester", "energy", "somatic"):
+                                    dataweb["temporal_engine"][week_id].pop(legacy_key, None)
                                 dataweb["temporal_engine"][week_id].pop("status", None)
                                 dataweb["temporal_engine"][week_id].pop("system_note", None)
                         except ValueError:
