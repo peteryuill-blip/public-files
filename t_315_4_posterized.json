@@ -1,0 +1,22 @@
+{
+  "fraction_per_band": [
+    0.3231,
+    0.1469,
+    0.0822,
+    0.0777,
+    0.2164,
+    0.1538
+  ],
+  "occupied_bands": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "n_occupied": 6,
+  "lowest_occupied": 0,
+  "highest_occupied": 5,
+  "contiguous": true
+}
