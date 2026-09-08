@@ -1,0 +1,2854 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "V21 Stage 1 record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "briefing",
+    "image_conditions",
+    "inventory",
+    "description",
+    "mapping",
+    "material",
+    "counterfactuals",
+    "axes",
+    "recorded"
+  ],
+  "properties": {
+    "briefing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "work_id",
+        "substrate_code",
+        "ink_code",
+        "sheet_dimensions",
+        "sheet_orientation",
+        "mass_displacement"
+      ],
+      "properties": {
+        "work_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "substrate_code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ink_code": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sheet_dimensions": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sheet_orientation": {
+          "type": "string",
+          "enum": [
+            "LANDSCAPE",
+            "PORTRAIT"
+          ]
+        },
+        "mass_displacement": {
+          "type": "string",
+          "enum": [
+            "CENTRED",
+            "N_SLIGHT",
+            "NE_SLIGHT",
+            "E_SLIGHT",
+            "SE_SLIGHT",
+            "S_SLIGHT",
+            "SW_SLIGHT",
+            "W_SLIGHT",
+            "NW_SLIGHT",
+            "N_MARKED",
+            "NE_MARKED",
+            "E_MARKED",
+            "SE_MARKED",
+            "S_MARKED",
+            "SW_MARKED",
+            "W_MARKED",
+            "NW_MARKED"
+          ]
+        }
+      }
+    },
+    "image_conditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "cells",
+          "limitation"
+        ],
+        "properties": {
+          "cells": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-F][1-6]$"
+            },
+            "minItems": 1
+          },
+          "limitation": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "elements",
+        "primary",
+        "residue",
+        "second_pigment",
+        "surveyed_cells"
+      ],
+      "properties": {
+        "elements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tag",
+              "cells",
+              "direction"
+            ],
+            "properties": {
+              "tag": {
+                "type": "string",
+                "pattern": "^E[0-9]+$"
+              },
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-F][1-6]$"
+                },
+                "minItems": 1
+              },
+              "direction": {
+                "type": "string",
+                "enum": [
+                  "N",
+                  "NE",
+                  "E",
+                  "SE",
+                  "S",
+                  "SW",
+                  "W",
+                  "NW",
+                  "RADIAL",
+                  "NOT_ESTABLISHED"
+                ]
+              },
+              "relations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "other_tag",
+                    "relation"
+                  ],
+                  "properties": {
+                    "other_tag": {
+                      "type": "string",
+                      "pattern": "^E[0-9]+$"
+                    },
+                    "relation": {
+                      "type": "string",
+                      "enum": [
+                        "OVERLAPS",
+                        "WITHIN",
+                        "CONTAINS",
+                        "ADJACENT"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "primary": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^E[0-9]+$"
+          },
+          "minItems": 1
+        },
+        "residue": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "count_band"
+          ],
+          "properties": {
+            "count_band": {
+              "type": "string",
+              "enum": [
+                "NONE",
+                "FEW",
+                "MANY"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "shape": {
+              "type": "string",
+              "enum": [
+                "ROUND",
+                "ELONGATED",
+                "MIXED",
+                "NOT_ESTABLISHED"
+              ]
+            }
+          }
+        },
+        "second_pigment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "present"
+          ],
+          "properties": {
+            "present": {
+              "type": "boolean"
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "present": {
+                    "const": true
+                  }
+                },
+                "required": [
+                  "present"
+                ]
+              },
+              "then": {
+                "required": [
+                  "cells"
+                ]
+              }
+            }
+          ]
+        },
+        "surveyed_cells": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-F][1-6]$"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "description": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "boundaries",
+        "mark_bodies",
+        "phases",
+        "depletion",
+        "repeated_units"
+      ],
+      "properties": {
+        "boundaries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tag",
+              "trait",
+              "cells"
+            ],
+            "properties": {
+              "tag": {
+                "type": "string",
+                "pattern": "^E[0-9]+$"
+              },
+              "trait": {
+                "type": "string",
+                "enum": [
+                  "HARD",
+                  "SOFT_FEATHERED",
+                  "DIFFUSED_BLOOMED",
+                  "BROKEN_RAGGED",
+                  "MECHANICALLY_DISTURBED",
+                  "DIMINISHED",
+                  "POOLED_RING",
+                  "INTERRUPTED"
+                ]
+              },
+              "bounded_by_dry_structure": {
+                "type": "boolean"
+              },
+              "exit_vector_preserved": {
+                "type": "boolean"
+              },
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-F][1-6]$"
+                },
+                "minItems": 1
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "trait": {
+                      "enum": [
+                        "DIFFUSED_BLOOMED",
+                        "POOLED_RING"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "trait"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "bounded_by_dry_structure"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "trait": {
+                      "const": "INTERRUPTED"
+                    }
+                  },
+                  "required": [
+                    "trait"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "exit_vector_preserved"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "mark_bodies": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tag",
+              "limit_findable",
+              "interior",
+              "retracing",
+              "bloom"
+            ],
+            "properties": {
+              "tag": {
+                "type": "string",
+                "pattern": "^E[0-9]+$"
+              },
+              "limit_findable": {
+                "type": "string",
+                "enum": [
+                  "YES",
+                  "PARTIAL",
+                  "NO"
+                ],
+                "description": "Saturated extent only; dry passages excluded."
+              },
+              "interior": {
+                "type": "string",
+                "enum": [
+                  "ACCOUNTED",
+                  "CLOSED_TO_UNIFORM",
+                  "HOLLOW"
+                ]
+              },
+              "retracing": {
+                "type": "string",
+                "enum": [
+                  "PRESENT",
+                  "ABSENT"
+                ]
+              },
+              "bloom": {
+                "type": "string",
+                "enum": [
+                  "SYMMETRIC_HALO",
+                  "ASYMMETRIC_TRACKING",
+                  "NONE"
+                ]
+              }
+            }
+          }
+        },
+        "phases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tag",
+              "entry",
+              "body",
+              "transition",
+              "terminal"
+            ],
+            "properties": {
+              "tag": {
+                "type": "string",
+                "pattern": "^E[0-9]+$"
+              },
+              "entry": {
+                "type": "string",
+                "enum": [
+                  "SOUND",
+                  "FAILED",
+                  "PHASE_MISSING"
+                ]
+              },
+              "body": {
+                "type": "string",
+                "enum": [
+                  "SOUND",
+                  "FAILED",
+                  "PHASE_MISSING"
+                ]
+              },
+              "transition": {
+                "type": "string",
+                "enum": [
+                  "SOUND",
+                  "FAILED",
+                  "PHASE_MISSING",
+                  "NOT_PRESENT"
+                ]
+              },
+              "terminal": {
+                "type": "string",
+                "enum": [
+                  "SOUND",
+                  "FAILED",
+                  "PHASE_MISSING"
+                ]
+              },
+              "failure_note": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "depletion": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tag",
+              "state"
+            ],
+            "properties": {
+              "tag": {
+                "type": "string",
+                "pattern": "^E[0-9]+$"
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "RESOLVED",
+                  "COLLAPSED",
+                  "NONE"
+                ]
+              }
+            }
+          }
+        },
+        "repeated_units": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "cells",
+              "instances"
+            ],
+            "properties": {
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-F][1-6]$"
+                },
+                "minItems": 1
+              },
+              "instances": {
+                "type": "integer",
+                "minimum": 2
+              }
+            }
+          }
+        }
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bands",
+        "cells_with_multiple_ink_bands",
+        "pass_legibility",
+        "ground_shapes",
+        "ground_continuity",
+        "field_scale",
+        "directional",
+        "weight_relations"
+      ],
+      "properties": {
+        "bands": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "band_index",
+              "cells",
+              "material"
+            ],
+            "properties": {
+              "band_index": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-F][1-6]$"
+                },
+                "minItems": 1
+              },
+              "material": {
+                "type": "string",
+                "enum": [
+                  "INK",
+                  "SECOND_PIGMENT"
+                ]
+              }
+            }
+          }
+        },
+        "cells_with_multiple_ink_bands": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-F][1-6]$"
+          }
+        },
+        "pass_legibility": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "cell",
+              "state"
+            ],
+            "properties": {
+              "cell": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "LEGIBLE",
+                  "FUSED",
+                  "NO_OVERLAP"
+                ]
+              }
+            }
+          }
+        },
+        "ground_shapes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "cells",
+              "bounded_by",
+              "confirmed_against_bw"
+            ],
+            "properties": {
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-F][1-6]$"
+                },
+                "minItems": 1
+              },
+              "bounded_by": {
+                "type": "string",
+                "enum": [
+                  "INK_MULTIPLE_SIDES",
+                  "INK_ONE_SIDE",
+                  "SHEET_EDGE"
+                ]
+              },
+              "shares_limit_with": {
+                "type": "string",
+                "pattern": "^E[0-9]+$"
+              },
+              "confirmed_against_bw": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "ground_continuity": {
+          "type": "string",
+          "enum": [
+            "CONTINUOUS",
+            "FRAGMENTED",
+            "NOT_PRESENT"
+          ]
+        },
+        "field_scale": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "masses",
+            "pale_connection",
+            "reads_as"
+          ],
+          "properties": {
+            "masses": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "pale_connection": {
+              "type": "boolean"
+            },
+            "reads_as": {
+              "type": "string",
+              "enum": [
+                "ONE_FIELD",
+                "SEPARATE_IMAGES"
+              ]
+            }
+          }
+        },
+        "directional": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tag",
+              "relation"
+            ],
+            "properties": {
+              "tag": {
+                "type": "string",
+                "pattern": "^E[0-9]+$"
+              },
+              "relation": {
+                "type": "string",
+                "enum": [
+                  "ALIGNED",
+                  "COUNTER",
+                  "APART"
+                ]
+              }
+            }
+          }
+        },
+        "weight_relations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "related_cells",
+            "unrelated_cells"
+          ],
+          "properties": {
+            "related_cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              }
+            },
+            "unrelated_cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "material": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sizing_family",
+        "demand",
+        "demand_evidence",
+        "boundary_positions"
+      ],
+      "properties": {
+        "sizing_family": {
+          "type": "string",
+          "enum": [
+            "RAW",
+            "SEMI_SIZED",
+            "SIZED"
+          ]
+        },
+        "demand": {
+          "type": "string",
+          "enum": [
+            "LIGHT",
+            "MODERATE",
+            "HEAVY"
+          ]
+        },
+        "demand_evidence": {
+          "type": "string",
+          "minLength": 15
+        },
+        "boundary_positions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tag",
+              "cells",
+              "position"
+            ],
+            "properties": {
+              "tag": {
+                "type": "string",
+                "pattern": "^E[0-9]+$"
+              },
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-F][1-6]$"
+                },
+                "minItems": 1
+              },
+              "position": {
+                "type": "string",
+                "enum": [
+                  "ABOVE",
+                  "AT",
+                  "BELOW"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "counterfactuals": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "test",
+          "target_tag",
+          "target_cells",
+          "expected_consequence",
+          "observed",
+          "grounding"
+        ],
+        "properties": {
+          "test": {
+            "type": "string",
+            "enum": [
+              "DEPENDENCY",
+              "CHANCE",
+              "CLOSURE"
+            ]
+          },
+          "target_tag": {
+            "type": "string",
+            "pattern": "^E[0-9]+$"
+          },
+          "target_cells": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-F][1-6]$"
+            },
+            "minItems": 1
+          },
+          "expected_consequence": {
+            "type": "string",
+            "minLength": 20
+          },
+          "observed": {
+            "type": "string",
+            "minLength": 20
+          },
+          "grounding": {
+            "type": "string",
+            "minLength": 20
+          },
+          "interacting_with": {
+            "type": "string",
+            "pattern": "^E[0-9]+$"
+          }
+        }
+      }
+    },
+    "axes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "substrate_integrity",
+        "boundary_morphology",
+        "mark_integrity",
+        "kinematic_index",
+        "visual_cadence",
+        "tonal_architecture",
+        "figure_ground",
+        "equilibrium",
+        "field_extent",
+        "global_coherence",
+        "structural_dependency",
+        "stochastic_integration",
+        "compositional_closure"
+      ],
+      "properties": {
+        "substrate_integrity": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "BREACHED",
+                "SOUND",
+                "SOUND_UNDER_DEMAND",
+                "SOUND_UNDER_HEAVY_DEMAND",
+                "HELD_AT_CHARACTERISTIC_FAILURE",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            }
+          ]
+        },
+        "boundary_morphology": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "CONTROL_LOST",
+                "AT_SUBSTRATE",
+                "ABOVE_SUBSTRATE",
+                "PLACED",
+                "SUSTAINED",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            }
+          ]
+        },
+        "mark_integrity": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "BREAKS_DOWN",
+                "HOLDS",
+                "HOLDS_AGAINST_SPREAD",
+                "HOLDS_ACROSS_SCALE",
+                "HOLDS_AT_EXTENT",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            }
+          ]
+        },
+        "kinematic_index": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "PHASE_FAILURE",
+                "PHASES_SOUND",
+                "MODULATED",
+                "MODULATED_THROUGH_DEPLETION",
+                "RESOLVED_AT_SCALE",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            }
+          ]
+        },
+        "visual_cadence": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "UNIFORM",
+                "VARIED",
+                "GOVERNED",
+                "NOT_PRESENT",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            },
+            "second_population_present": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence",
+            "second_population_present"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            }
+          ]
+        },
+        "tonal_architecture": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "SINGLE_BAND",
+                "SEPARATED",
+                "DISTRIBUTED",
+                "STRUCTURED",
+                "TONE_CARRIES",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            }
+          ]
+        },
+        "figure_ground": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "GROUND_INERT",
+                "GROUND_SHAPED",
+                "GROUND_HELD",
+                "GROUND_STRUCTURAL",
+                "GROUND_INTERLOCKS",
+                "NOT_PRESENT",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            },
+            "junctions": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "cell",
+                  "ground_shape_cells",
+                  "element_tag"
+                ],
+                "properties": {
+                  "cell": {
+                    "type": "string",
+                    "pattern": "^[A-F][1-6]$"
+                  },
+                  "ground_shape_cells": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-F][1-6]$"
+                    },
+                    "minItems": 1
+                  },
+                  "element_tag": {
+                    "type": "string",
+                    "pattern": "^E[0-9]+$"
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "value": {
+                    "const": "GROUND_INTERLOCKS"
+                  }
+                },
+                "required": [
+                  "value"
+                ]
+              },
+              "then": {
+                "required": [
+                  "junctions"
+                ]
+              }
+            }
+          ]
+        },
+        "equilibrium": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "UNACCOUNTED",
+                "ACCOUNTED",
+                "ACCOUNTED_ASYMMETRICALLY",
+                "ACCOUNTED_ACROSS_FIELD",
+                "WEIGHT_ORGANISES",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            }
+          ]
+        },
+        "field_extent": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "LOCAL",
+                "BANDED",
+                "FIELD",
+                "WHOLE"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            }
+          ]
+        },
+        "global_coherence": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "DISPERSED",
+                "COHERENT",
+                "COHERENT_WITH_COUNTER",
+                "COHERENT_ACROSS_REGISTERS",
+                "COHERENT_UNDER_CONFLICT",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            },
+            "lowpass_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "bw_observation": {
+              "type": "string",
+              "minLength": 20
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence",
+            "lowpass_observation",
+            "bw_observation"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            }
+          ]
+        },
+        "structural_dependency": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "enum": [
+                  "REDUNDANT",
+                  "REPLACEABLE",
+                  "NECESSARY"
+                ]
+              },
+              "cited_observation": {
+                "type": "string",
+                "minLength": 20
+              },
+              "cited_from": {
+                "type": "string",
+                "enum": [
+                  "2.1",
+                  "2.2",
+                  "2.3",
+                  "2.4",
+                  "2.5",
+                  "3.1",
+                  "3.2",
+                  "3.3",
+                  "3.4",
+                  "3.5",
+                  "3.6",
+                  "4.2",
+                  "4.4",
+                  "5.1",
+                  "5.2",
+                  "5.3"
+                ]
+              },
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-F][1-6]$"
+                },
+                "minItems": 1
+              },
+              "confidence": {
+                "type": "string",
+                "enum": [
+                  "HIGH",
+                  "MODERATE",
+                  "LOW"
+                ]
+              },
+              "decision_note": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "competing_value",
+                  "deciding_observation"
+                ],
+                "properties": {
+                  "competing_value": {
+                    "type": "string"
+                  },
+                  "deciding_observation": {
+                    "type": "string",
+                    "minLength": 15
+                  }
+                }
+              },
+              "tag": {
+                "type": "string",
+                "pattern": "^E[0-9]+$"
+              },
+              "organisational_property": {
+                "type": "string",
+                "minLength": 15
+              },
+              "substitute_tag": {
+                "type": "string",
+                "pattern": "^E[0-9]+$"
+              },
+              "substitute_cells": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-F][1-6]$"
+                },
+                "minItems": 1
+              }
+            },
+            "required": [
+              "value",
+              "cited_observation",
+              "cited_from",
+              "cells",
+              "confidence",
+              "tag"
+            ],
+            "additionalProperties": false,
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "confidence": {
+                      "enum": [
+                        "MODERATE",
+                        "LOW"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "confidence"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "decision_note"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "value": {
+                      "const": "NECESSARY"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "organisational_property"
+                  ]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "value": {
+                      "const": "REPLACEABLE"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ]
+                },
+                "then": {
+                  "required": [
+                    "substitute_tag",
+                    "substitute_cells"
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "stochastic_integration": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "UNCONTROLLED",
+                "ACCEPTED",
+                "INCORPORATED",
+                "GENERATED",
+                "EXPLOITED",
+                "NOT_PRESENT",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            },
+            "evidence_route": {
+              "type": "string",
+              "enum": [
+                "CONTAINMENT",
+                "REPETITION",
+                "PRECISION",
+                "SINGLE_DEPOSITION_CONTINUATION",
+                "NONE"
+              ]
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence",
+            "evidence_route"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            }
+          ]
+        },
+        "compositional_closure": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": "string",
+              "enum": [
+                "RESOLVED",
+                "WORKED_PAST",
+                "WORKED_PAST_REPEATEDLY",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "cited_observation": {
+              "type": "string",
+              "minLength": 20
+            },
+            "cited_from": {
+              "type": "string",
+              "enum": [
+                "2.1",
+                "2.2",
+                "2.3",
+                "2.4",
+                "2.5",
+                "3.1",
+                "3.2",
+                "3.3",
+                "3.4",
+                "3.5",
+                "3.6",
+                "4.2",
+                "4.4",
+                "5.1",
+                "5.2",
+                "5.3"
+              ]
+            },
+            "cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              },
+              "minItems": 1
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MODERATE",
+                "LOW"
+              ]
+            },
+            "decision_note": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "competing_value",
+                "deciding_observation"
+              ],
+              "properties": {
+                "competing_value": {
+                  "type": "string"
+                },
+                "deciding_observation": {
+                  "type": "string",
+                  "minLength": 15
+                }
+              }
+            },
+            "markers": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "marker",
+                  "cell",
+                  "timing"
+                ],
+                "properties": {
+                  "marker": {
+                    "type": "string",
+                    "enum": [
+                      "ACCUMULATION_FUSED",
+                      "UNNECESSARY_FILLING",
+                      "CORRECTIVE_RETRACING"
+                    ]
+                  },
+                  "cell": {
+                    "type": "string",
+                    "pattern": "^[A-F][1-6]$"
+                  },
+                  "timing": {
+                    "type": "string",
+                    "enum": [
+                      "DURING_BUILD",
+                      "AFTER_RESOLUTION"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "value",
+            "cited_observation",
+            "cited_from",
+            "cells",
+            "confidence"
+          ],
+          "additionalProperties": false,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "confidence": {
+                    "enum": [
+                      "MODERATE",
+                      "LOW"
+                    ]
+                  }
+                },
+                "required": [
+                  "confidence"
+                ]
+              },
+              "then": {
+                "required": [
+                  "decision_note"
+                ]
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "value": {
+                    "enum": [
+                      "WORKED_PAST",
+                      "WORKED_PAST_REPEATEDLY"
+                    ]
+                  }
+                },
+                "required": [
+                  "value"
+                ]
+              },
+              "then": {
+                "required": [
+                  "markers"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "recorded": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "markers",
+        "sheet_characteristics",
+        "observations"
+      ],
+      "properties": {
+        "markers": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dry_passage",
+            "splatter",
+            "drip",
+            "pooled_deposit",
+            "bare_paper",
+            "edge_runoff",
+            "corrective_retracing",
+            "second_pigment"
+          ],
+          "properties": {
+            "dry_passage": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "present"
+              ],
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "cells": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-F][1-6]$"
+                  },
+                  "minItems": 1
+                },
+                "character": {
+                  "type": "string",
+                  "enum": [
+                    "PARALLEL_DIRECTIONAL",
+                    "SCATTERED",
+                    "NOT_ESTABLISHED"
+                  ]
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "present": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "present"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "cells",
+                      "character"
+                    ]
+                  }
+                }
+              ]
+            },
+            "splatter": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "present"
+              ],
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "cells": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-F][1-6]$"
+                  },
+                  "minItems": 1
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "present": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "present"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "cells"
+                    ]
+                  }
+                }
+              ]
+            },
+            "drip": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "present"
+              ],
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "cells": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-F][1-6]$"
+                  },
+                  "minItems": 1
+                },
+                "direction": {
+                  "type": "string",
+                  "enum": [
+                    "N",
+                    "NE",
+                    "E",
+                    "SE",
+                    "S",
+                    "SW",
+                    "W",
+                    "NW",
+                    "NOT_ESTABLISHED"
+                  ]
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "present": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "present"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "cells",
+                      "direction"
+                    ]
+                  }
+                }
+              ]
+            },
+            "pooled_deposit": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "present"
+              ],
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "cells": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-F][1-6]$"
+                  },
+                  "minItems": 1
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "present": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "present"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "cells"
+                    ]
+                  }
+                }
+              ]
+            },
+            "bare_paper": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "present"
+              ],
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "cells": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-F][1-6]$"
+                  },
+                  "minItems": 1
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "present": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "present"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "cells"
+                    ]
+                  }
+                }
+              ]
+            },
+            "edge_runoff": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "present"
+              ],
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "cells": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-F][1-6]$"
+                  },
+                  "minItems": 1
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "present": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "present"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "cells"
+                    ]
+                  }
+                }
+              ]
+            },
+            "corrective_retracing": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "present"
+              ],
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "cells": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-F][1-6]$"
+                  },
+                  "minItems": 1
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "present": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "present"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "cells"
+                    ]
+                  }
+                }
+              ]
+            },
+            "second_pigment": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "present"
+              ],
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "cells": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[A-F][1-6]$"
+                  },
+                  "minItems": 1
+                }
+              },
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "present": {
+                        "const": true
+                      }
+                    },
+                    "required": [
+                      "present"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "cells"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "sheet_characteristics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dominant_geometry",
+            "widest_stroke",
+            "primary_entry",
+            "primary_terminal"
+          ],
+          "properties": {
+            "dominant_geometry": {
+              "type": "string",
+              "enum": [
+                "RADIAL",
+                "LINEAR",
+                "MASSED",
+                "SCATTERED",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "widest_stroke": {
+              "type": "string",
+              "enum": [
+                "UNDER_HALF_CELL",
+                "ABOUT_ONE_CELL",
+                "OVER_ONE_CELL"
+              ]
+            },
+            "primary_entry": {
+              "type": "string",
+              "enum": [
+                "SHARP",
+                "BLUNT_ROUNDED",
+                "PHASE_MISSING",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "primary_terminal": {
+              "type": "string",
+              "enum": [
+                "DECELERATED",
+                "LIFTED",
+                "ABRUPT",
+                "FADED",
+                "PHASE_MISSING",
+                "NOT_ESTABLISHED"
+              ]
+            },
+            "principal_ground_cells": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-F][1-6]$"
+              }
+            },
+            "colour": {
+              "type": "string"
+            }
+          }
+        },
+        "observations": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "cells",
+              "note"
+            ],
+            "properties": {
+              "cells": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-F][1-6]$"
+                },
+                "minItems": 1
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 200
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
